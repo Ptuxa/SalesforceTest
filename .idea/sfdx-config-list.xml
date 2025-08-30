@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SFDXConfigListPersistentComponent">
+    <option name="configInfos">
+      <list>
+        <SFDXConfigInfo>
+          <option name="key" value="target-dev-hub" />
+          <option name="location" value="Local" />
+          <option name="value" value="nstandm163@agentforce.com" />
+        </SFDXConfigInfo>
+      </list>
+    </option>
+  </component>
+</project>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="salesforce.dx.module" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/force-app">
+      <sourceFolder url="file://$MODULE_DIR$/force-app/main/default" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/force-app/test/default" isTestSource="true" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+  <component name="SFModuleSetting">
+    <option name="type" value="DX" />
+  </component>
+</module>
