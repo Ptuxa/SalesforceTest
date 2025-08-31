@@ -1,0 +1,10 @@
+<template>
+    <section>
+        <h3>Cart</h3>
+        <template for:each={cart} for:item="c">
+            <div key={c.Id}>{c.Name} — {c.qty} — {c.Price__c}</div>
+        </template>
+        <lightning-button label="Checkout" onclick={checkout}></lightning-button>
+        <lightning-button label="Close" onclick={hide}></lightning-button>
+    </section>
+</template>

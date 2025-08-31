@@ -40,4 +40,13 @@
         <precision>18</precision>
         <scale>2</scale>
     </fields>
+
+    <fields>
+        <fullName>LineTotal__c</fullName>
+        <label>Line Total</label>
+        <type>Currency</type>
+        <precision>18</precision>
+        <scale>2</scale>
+        <formula>Amount__c * UnitCost__c</formula>
+    </fields>
 </CustomObject>

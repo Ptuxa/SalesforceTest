@@ -1,0 +1,47 @@
+<template>
+    <lightning-card>
+        <div class="slds-grid slds-align_space-between slds-p-around_medium">
+            <lightning-button label="Create Item" onclick={handleCreateItem} disabled={createDisabled}></lightning-button>
+
+            <div>{account.Name} — {account.AccountNumber} — {account.Industry}</div>
+
+            <lightning-button label="Cart ({cart.length})" onclick={openCart}></lightning-button>
+        </div>
+
+        <div class="slds-p-around_medium">
+            <lightning-input type="search" placeholder="Search" onchange={onSearch}></lightning-input>
+        </div>
+
+        <div class="slds-grid">
+            <div class="slds-col slds-size_2-of-3">
+                <template for:each={filteredItems} for:item="it">
+                    <c-item-tile key={it.Id} item={it} onaddtocart={handleAddToCart} onshowdetails={showDetails}></c-item-tile>
+                </template>
+            </div>
+
+            <div class="slds-col slds-size_1-of-3 slds-p-around_medium">
+                <h3>Filters</h3>
+                <div>Type:</div>
+                <template for:each={types} for:item="t">
+                    <div key={t}>
+                        <label>
+                            <input type="checkbox" data-value={t} class="type-checkbox" onchange={applyFilters}/> {t}
+                        </label>
+                    </div>
+                </template>
+
+                <div>Family:</div>
+                <template for:each={families} for:item="f">
+                    <div key={f}>
+                        <label>
+                            <input type="checkbox" data-value={f} class="family-checkbox" onchange={applyFilters}/> {f}
+                        </label>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </lightning-card>
+
+    <c-item-details-modal item-id={selectedItemId} onclosemodal={closeDetails}></c-item-details-modal>
+    <c-cart-modal cart={cart} oncheckout={handleCheckout} onclose={closeCart}></c-cart-modal>
+</template>

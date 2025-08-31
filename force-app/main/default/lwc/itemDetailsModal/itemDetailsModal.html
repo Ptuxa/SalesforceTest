@@ -1,0 +1,15 @@
+<template>
+    <template if:true={itemId}>
+        <section role="dialog" aria-modal="true" aria-labelledby="modal-heading">
+            <lightning-record-view-form record-id={itemId} object-api-name="Item__c">
+                <lightning-output-field field-name="Name"></lightning-output-field>
+                <lightning-output-field field-name="Description__c"></lightning-output-field>
+                <lightning-output-field field-name="Price__c"></lightning-output-field>
+            </lightning-record-view-form>
+
+            <div class="slds-m-top_medium">
+                <lightning-button label="Close" onclick={handleClose}></lightning-button>
+            </div>
+        </section>
+    </template>
+</template>
