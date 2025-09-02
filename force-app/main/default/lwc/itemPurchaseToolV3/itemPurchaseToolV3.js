@@ -4,7 +4,7 @@ import getAccountInfo from '@salesforce/apex/ItemController.getAccountInfo';
 import createPurchaseWithLines from '@salesforce/apex/PurchaseService.createPurchaseWithLines';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
-export default class ItemPurchaseTool extends LightningElement {
+export default class ItemPurchaseToolV3 extends LightningElement {
     @track items = [];
     @track filteredItems = [];
     @track cart = [];
