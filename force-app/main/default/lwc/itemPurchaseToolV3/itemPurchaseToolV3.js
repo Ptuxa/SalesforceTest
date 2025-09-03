@@ -1,4 +1,4 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, track, api } from 'lwc';
 import getItems from '@salesforce/apex/ItemController.getItems';
 import getAccountInfo from '@salesforce/apex/ItemController.getAccountInfo';
 import createPurchaseWithLines from '@salesforce/apex/PurchaseService.createPurchaseWithLines';
@@ -12,6 +12,7 @@ export default class ItemPurchaseToolV3 extends LightningElement {
     @track families = [];
     @track account = {};
     @track selectedItemId = null;
+    @api recordId;
 
     searchKey = '';
     accountId = null;
@@ -19,15 +20,20 @@ export default class ItemPurchaseToolV3 extends LightningElement {
 
     // computed property for disabled attribute (no `!` in template)
     get createDisabled() {
+        console.log('isManager response:', JSON.stringify(this.isManager));
+
         return !this.isManager;
     }
 
     connectedCallback() {
-        const params = new URLSearchParams(window.location.search);
-        const recId = params.get('c__recordId');
-        if (recId) {
-            this.accountId = recId;
-            getAccountInfo({ accountId: recId })
+        // const params = new URLSearchParams(window.location.search);
+        // const recId = params.get('c__recordId');
+
+        console.log('recordId response:', JSON.stringify(this.recordId));
+
+        if (this.recordId) {
+            this.accountId = this.recordId;
+            getAccountInfo({ accountId: this.recordId })
                 .then(res => {
                     this.account = res.account;
                     this.isManager = res.isManager;
