@@ -1,5 +1,5 @@
 <template>
-    <c-create-item-with-photo oncreated={handleItemCreated} onclose={handleCreateModalClose}></c-create-item-with-photo>
+    <c-create-item-with-photo account-id={accountId} oncreated={handleItemCreated} onclose={handleCreateModalClose}></c-create-item-with-photo>
     <lightning-card>
         <div class="slds-grid slds-align_space-between slds-p-around_medium">
             <lightning-button label="Create Item" onclick={handleCreateItem} disabled={createDisabled}></lightning-button>
