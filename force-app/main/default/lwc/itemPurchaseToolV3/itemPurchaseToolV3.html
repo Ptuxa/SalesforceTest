@@ -1,0 +1,70 @@
+<template>
+    <!-- Create Item Modal -->
+    <c-create-item-with-photo account-id={accountId}
+                              oncreated={handleItemCreated}
+                              onclose={handleCreateModalClose}>
+    </c-create-item-with-photo>
+
+    <!-- Item Details Modal -->
+    <template if:true={showDetailsModal}>
+        <c-item-details-modal item-id={selectedItemId} onclosemodal={handleCloseDetails}></c-item-details-modal>
+    </template>
+
+    <template if:true={isCartOpen}>
+        <c-cart-modal
+                cart={cart}
+                account-id={accountId}
+                onclose={handleCartClose}
+                oncheckout={handleCartCheckout}>
+        </c-cart-modal>
+    </template>
+
+    <!-- Card с кнопками и фильтрами -->
+    <lightning-card>
+        <div class="slds-grid slds-align_space-between slds-p-around_medium">
+            <lightning-button label="Create Item" onclick={handleCreateItem}></lightning-button>
+
+            <div class="slds-col slds-align_absolute-center">
+                {account.Name} — {account.AccountNumber} — {account.Industry}
+            </div>
+
+            <lightning-button label="Cart" onclick={openCart}></lightning-button>
+        </div>
+
+        <div class="slds-p-around_medium">
+            <lightning-input type="search" placeholder="Search" onchange={onSearch}></lightning-input>
+        </div>
+
+        <div class="slds-grid">
+            <div class="slds-col slds-size_2-of-3">
+                <template for:each={filteredItems} for:item="it">
+                    <c-item-tile key={it.Id} item={it}
+                                 onaddtocart={handleAddToCart}
+                                 onshowdetails={handleShowDetails}>
+                    </c-item-tile>
+                </template>
+            </div>
+
+            <div class="slds-col slds-size_1-of-3 slds-p-around_medium">
+                <h3>Filters</h3>
+                <div>Type:</div>
+                <template for:each={types} for:item="t">
+                    <div key={t}>
+                        <label>
+                            <input type="checkbox" data-value={t} class="type-checkbox" onchange={applyFilters}/> {t}
+                        </label>
+                    </div>
+                </template>
+
+                <div>Family:</div>
+                <template for:each={families} for:item="f">
+                    <div key={f}>
+                        <label>
+                            <input type="checkbox" data-value={f} class="family-checkbox" onchange={applyFilters}/> {f}
+                        </label>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </lightning-card>
+</template>

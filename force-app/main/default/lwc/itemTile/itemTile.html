@@ -1,0 +1,11 @@
+<template>
+    <div class="item-tile slds-box slds-m-around_small">
+        <img src={item.Image__c} alt={item.Name} style="width:120px;height:120px;object-fit:cover"/>
+        <h4>{item.Name}</h4>
+        <p>{item.Description__c}</p>
+        <div class="slds-m-top_small">
+            <lightning-button label="Details" onclick={handleDetailsClick}></lightning-button>
+            <lightning-button label="Add" onclick={add}></lightning-button>
+        </div>
+    </div>
+</template>

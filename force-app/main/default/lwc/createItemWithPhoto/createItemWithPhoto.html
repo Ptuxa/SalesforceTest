@@ -1,12 +1,44 @@
 <template>
-    <lightning-card title="Create Item">
-        <div class="slds-p-around_medium">
-            <lightning-input label="Name" value={name} onchange={onNameChange}></lightning-input>
-            <lightning-input label="Price" type="number" value={price} onchange={onPriceChange}></lightning-input>
+    <template if:true={visible}>
+        <section role="dialog" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 class="slds-text-heading_medium">Create Item</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium">
 
-            <div class="slds-m-top_medium">
-                <lightning-button variant="brand" label="Create" onclick={handleCreate}></lightning-button>
+                    <lightning-input label="Name" value={name} onchange={onNameChange}></lightning-input>
+
+                    <lightning-textarea label="Description" value={description} onchange={onDescriptionChange}></lightning-textarea>
+
+                    <lightning-combobox
+                            label="Type"
+                            value={type}
+                            options={typeOptions}
+                            placeholder="Select Type"
+                            onchange={onTypeChange}>
+                    </lightning-combobox>
+
+                    <lightning-combobox
+                            label="Family"
+                            value={family}
+                            options={familyOptions}
+                            placeholder="Select Family"
+                            onchange={onFamilyChange}>
+                    </lightning-combobox>
+
+                    <lightning-input type="number" label="Price" value={price} step="0.01" min="0" onchange={onPriceChange}></lightning-input>
+
+                    <p class="slds-text-body_small">Image будет загружена автоматически с Unsplash по имени.</p>
+
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Cancel" onclick={handleCancel}></lightning-button>
+                    <lightning-button variant="brand" label="Create" onclick={handleCreate} disabled={isSaving}></lightning-button>
+                </footer>
             </div>
-        </div>
-    </lightning-card>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
 </template>
