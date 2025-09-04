@@ -1,12 +1,17 @@
 <template>
     <c-create-item-with-photo account-id={accountId} oncreated={handleItemCreated} onclose={handleCreateModalClose}></c-create-item-with-photo>
+<!--    <c-item-details-modal item-id={selectedItemId} onclosemodal={closeDetails}></c-item-details-modal>-->
+<!--    <c-cart-modal cart={cart} oncheckout={handleCheckout} onclose={closeCart}></c-cart-modal>-->
+
     <lightning-card>
         <div class="slds-grid slds-align_space-between slds-p-around_medium">
             <lightning-button label="Create Item" onclick={handleCreateItem} disabled={createDisabled}></lightning-button>
 
-            <div>{account.Name} — {account.AccountNumber} — {account.Industry}</div>
+            <div class="slds-col slds-align_absolute-center">
+                {account.Name} — {account.AccountNumber} — {account.Industry}
+            </div>
 
-            <lightning-button label="Cart ({cart.length})" onclick={openCart}></lightning-button>
+            <lightning-button label={cartLabel} onclick={openCart}></lightning-button>
         </div>
 
         <div class="slds-p-around_medium">
@@ -42,7 +47,4 @@
             </div>
         </div>
     </lightning-card>
-
-    <c-item-details-modal item-id={selectedItemId} onclosemodal={closeDetails}></c-item-details-modal>
-    <c-cart-modal cart={cart} oncheckout={handleCheckout} onclose={closeCart}></c-cart-modal>
 </template>

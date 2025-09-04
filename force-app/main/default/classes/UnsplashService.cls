@@ -42,10 +42,14 @@ public with sharing class UnsplashService {
 					}
 				}
 			} else {
+//				throw new CalloutException('Unsplash returned status ' + res.getStatusCode() + ' body: ' + res.getBody());
+
 				System.debug('Unsplash returned status ' + res.getStatusCode() + ' body: ' + res.getBody());
 			}
 		} catch (Exception e) {
 			System.debug('Unsplash callout error: ' + e.getMessage());
+
+//			throw new CalloutException('Unsplash callout error: ' + e.getMessage());
 		}
 		return null;
 	}

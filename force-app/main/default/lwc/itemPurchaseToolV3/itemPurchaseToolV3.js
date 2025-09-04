@@ -189,4 +189,8 @@ export default class ItemPurchaseToolV3 extends NavigationMixin(LightningElement
         const msg = (err && err.body && err.body.message) ? err.body.message : JSON.stringify(err);
         this.showToast('Error', msg, 'error');
     }
+
+    get cartLabel() {
+        return `Cart (${this.cart.length})`;
+    }
 }
