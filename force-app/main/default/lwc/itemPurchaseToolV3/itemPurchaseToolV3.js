@@ -13,6 +13,7 @@ export default class ItemPurchaseToolV3 extends NavigationMixin(LightningElement
     @track families = [];
     @track account = {};
     @track selectedItemId = null;
+    @track showDetailsModal = false;
 
     @track isCartOpen = false;
     @track isLoading = false;
@@ -114,48 +115,126 @@ export default class ItemPurchaseToolV3 extends NavigationMixin(LightningElement
     // -------------------------------
     handleAddToCart(e) {
         const item = e.detail;
-        if (!this.cart.some(c => c.Id === item.Id)) {
+
+        // Ищем товар в корзине
+        const existing = this.cart.find(c => c.Id === item.Id);
+
+        if (existing) {
+            // Если уже есть — увеличиваем qty
+            existing.qty += 1;
+            this.cart = [...this.cart]; // пересоздаём массив, чтобы LWC увидел изменения
+            this.showToast('Updated', `${item.Name} quantity: ${existing.qty}`, 'info');
+        } else {
+            // Если товара ещё нет — добавляем с qty = 1
             this.cart = [...this.cart, { ...item, qty: 1 }];
             this.showToast('Added', `${item.Name} added to cart`, 'success');
         }
     }
 
+
     openCart() { this.isCartOpen = true; }
     closeCart() { this.isCartOpen = false; }
 
-    handleCheckout() {
+    async handleCartCheckout() {
+        console.log('accountId:', this.accountId);
+        console.log('cart raw:', JSON.stringify(this.cart, null, 2));
+        console.log('Checkout linesInput:', JSON.stringify(linesInput, null, 2));
+
+        console.log('Checkout clicked');
+
+        if (!this.accountId) {
+            this.showToast('Error', 'AccountId not set', 'error');
+            return;
+        }
+        else {
+            console.log('ok');
+        }
+
+        console.log('accountId:', this.accountId);
+
         if (!this.cart.length) {
             this.showToast('Error', 'Cart is empty', 'error');
             return;
         }
 
-        const lines = this.cart.map(c => ({ itemId: c.Id, amount: c.qty, unitCost: c.Price__c }));
-        this.isLoading = true;
+        for (const c of this.cart) {
+            if (!c.Id || !c.Price__c) {
+                this.showToast('Error', `Item ${c.Name} has missing fields`, 'error');
+                return;
+            }
+        }
 
-        createPurchaseWithLines({ accountId: this.accountId, lines })
-            .then(purchaseId => {
-                this.showToast('Success', 'Purchase created', 'success');
-                this[NavigationMixin.Navigate]({
-                    type: 'standard__recordPage',
-                    attributes: {
-                        recordId: purchaseId,
-                        objectApiName: 'Purchase__c',
-                        actionName: 'view'
+        const linesInput = this.cart.map(c => ({
+            itemId: c.Id,
+            amount: Number(c.qty),
+            unitCost: Number(c.Price__c) || 0
+        }));
+
+        console.log('Checkout lines:', JSON.stringify(linesInput));
+
+        this.isLoading = true;
+        try {
+            const purchaseId = await createPurchaseWithLines({
+                accountId: this.accountId,
+                lines: JSON.parse(JSON.stringify(linesInput))
+            });
+            console.log('Purchase created, id:', purchaseId);
+            this.showToast('Success', 'Purchase created', 'success');
+            this[NavigationMixin.Navigate]({
+                type: 'standard__recordPage',
+                attributes: { recordId: purchaseId, objectApiName: 'Purchase__c', actionName: 'view' }
+            });
+        } catch (err) {
+            console.error('Checkout error (raw):', err);
+            let msg = 'Unknown server error';
+            try {
+                if (err && err.body) {
+                    if (err.body.pageErrors && err.body.pageErrors.length) {
+                        msg = err.body.pageErrors.map(pe => pe.message).join('; ');
+                    } else if (err.body.message) {
+                        msg = err.body.message;
+                    } else {
+                        // fieldErrors -> compose message
+                        const fe = err.body.fieldErrors || {};
+                        const parts = [];
+                        for (const f of Object.keys(fe)) {
+                            fe[f].forEach(feItem => parts.push(`${f}: ${feItem.message}`));
+                        }
+                        if (parts.length) msg = parts.join('; ');
+                        else msg = JSON.stringify(err.body);
                     }
-                });
-            })
-            .catch(err => this.showError(err))
-            .finally(() => this.isLoading = false);
+                } else if (err && err.message) {
+                    msg = err.message;
+                } else {
+                    msg = String(err);
+                }
+            } catch (parseErr) {
+                console.error('Error parsing server error:', parseErr);
+                msg = 'Error parsing server response';
+            }
+            this.showToast('Error', `Checkout failed: ${msg}`, 'error');
+            console.error('Checkout error (message):', msg);
+        } finally {
+            this.isLoading = false;
+        }
+
     }
+
+    handleCartClose() {
+        this.isCartOpen = false; // переменная, управляющая отображением модального
+    }
+
 
     // -------------------------------
     // Детали товара
     // -------------------------------
-    showDetails(e) {
+    handleShowDetails(e) {
         this.selectedItemId = e.detail;
+        this.showDetailsModal = true;
     }
 
-    closeDetails() {
+    handleCloseDetails() {
+        this.showDetailsModal = false;
         this.selectedItemId = null;
     }
 

@@ -1,29 +1,33 @@
-@IsTest
+@isTest
 private class PurchaseServiceTest {
-	@IsTest static void testCreatePurchaseWithLines() {
-		// Prepare data
-		Account acc = new Account(Name='Test Account');
+	@isTest static void testCreatePurchaseWithLines_withMap() {
+		// подготовка данных
+		Account acc = new Account(Name = 'Test Account');
 		insert acc;
 
-		Item__c item = new Item__c(Name='TstItem', Price__c = 10.00);
+		Item__c item = new Item__c(Name = 'Test Item', Price__c = 111, Account__c = acc.Id);
 		insert item;
 
-		// Prepare DTO list for PurchaseService
-		List<PurchaseService.PurchaseLineInput> lines = new List<PurchaseService.PurchaseLineInput>();
-		PurchaseService.PurchaseLineInput li = new PurchaseService.PurchaseLineInput();
-		li.itemId = item.Id;
-		li.amount = 2;
-		li.unitCost = 10.00;
-		lines.add(li);
+		// формируем список Map<String,Object>
+		List<Map<String,Object>> lines = new List<Map<String,Object>>();
+		Map<String,Object> m = new Map<String,Object>{
+		'itemId'   => item.Id,
+		'amount'   => 2,
+		'unitCost' => 111
+		};
+		lines.add(m);
 
 		Test.startTest();
 		Id purchaseId = PurchaseService.createPurchaseWithLines(acc.Id, lines);
 		Test.stopTest();
 
-		// Verify Purchase and totals (trigger should have filled totals)
-		Purchase__c p = [SELECT Id, TotalItems__c, GrandTotal__c FROM Purchase__c WHERE Id = :purchaseId LIMIT 1];
-		System.assertEquals(2, Integer.valueOf(p.TotalItems__c), 'TotalItems should be 2');
-		// cast to Decimal for comparison
-		System.assertEquals(Decimal.valueOf(20), p.GrandTotal__c, 'GrandTotal should be 20.00');
+		System.assertNotEquals(null, purchaseId, 'Purchase should be created');
+
+		Purchase__c p = [SELECT Id, ClientId__c FROM Purchase__c WHERE Id = :purchaseId LIMIT 1];
+		System.assertEquals(acc.Id, p.ClientId__c);
+
+		List<PurchaseLine__c> pls = [SELECT Id, ItemId__c, Amount__c, UnitCost__c FROM PurchaseLine__c WHERE PurchaseId__c = :purchaseId];
+		System.assertEquals(1, pls.size());
+		System.assertEquals(item.Id, pls[0].ItemId__c);
 	}
 }

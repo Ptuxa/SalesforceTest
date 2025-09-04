@@ -49,6 +49,9 @@ public with sharing class PurchaseLineHandler {
       p.GrandTotal__c = mapTotals.containsKey(pid) ? mapTotals.get(pid) : 0;
       updates.add(p);
     }
+
+    System.debug(JSON.serialize(updates));
+
     if (!updates.isEmpty()) update updates;
   }
 }

@@ -1,15 +1,29 @@
 <template>
     <template if:true={itemId}>
-        <section role="dialog" aria-modal="true" aria-labelledby="modal-heading">
-            <lightning-record-view-form record-id={itemId} object-api-name="Item__c">
-                <lightning-output-field field-name="Name"></lightning-output-field>
-                <lightning-output-field field-name="Description__c"></lightning-output-field>
-                <lightning-output-field field-name="Price__c"></lightning-output-field>
-            </lightning-record-view-form>
+        <section role="dialog" aria-modal="true" aria-labelledby="modal-heading"
+                 class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Header -->
+                <header class="slds-modal__header">
+                    <h2 id="modal-heading" class="slds-text-heading_medium">{name}</h2>
+                    <button class="slds-button slds-button_icon slds-modal__close" onclick={handleClose}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close"></lightning-icon>
+                    </button>
+                </header>
 
-            <div class="slds-m-top_medium">
-                <lightning-button label="Close" onclick={handleClose}></lightning-button>
+                <!-- Body -->
+                <div class="slds-modal__content slds-p-around_medium">
+                    <img src={imageUrl} alt={name} style="max-width:100%; margin-bottom:10px;" />
+                    <p>{description}</p>
+                    <p><strong>Price:</strong> {price}</p>
+                </div>
+
+                <!-- Footer -->
+                <footer class="slds-modal__footer">
+                    <lightning-button variant="neutral" label="Close" onclick={handleClose}></lightning-button>
+                </footer>
             </div>
         </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
     </template>
 </template>
